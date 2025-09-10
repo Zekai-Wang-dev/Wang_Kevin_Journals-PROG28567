@@ -27,6 +27,7 @@ public class Pipeline : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
+            totalMagnitude = 0;
 
             time += Time.deltaTime;
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -50,7 +51,11 @@ public class Pipeline : MonoBehaviour
         }
         else
         {
-            print(totalMagnitude);
+            if (totalMagnitude > 0)
+            {
+                print(totalMagnitude);
+
+            }
             time = 0;
             mousePositions.Clear();
             totalMagnitude = 0;
