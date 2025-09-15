@@ -31,6 +31,13 @@ public class Player : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+
+            SpawnBombOnRandomCorner(3f);
+
+        }
+
     }
 
     private void SpawnBombAtOffset(Vector3 offset)
@@ -47,6 +54,47 @@ public class Player : MonoBehaviour
         {
 
             SpawnBombAtOffset(new Vector3(0, -bombTrailSpacing * i - bombTrailSpacing, 0));
+
+        }
+
+    }
+
+    public void SpawnBombOnRandomCorner(float inDistance)
+    {
+
+        int randomNumber = Random.Range(0, 4);
+        float halfInDistance = inDistance / 2; 
+
+        Vector3 topLeft = new Vector3(-halfInDistance, halfInDistance, 0);
+        Vector3 topRight = topLeft + new Vector3(inDistance, 0, 0);
+        Vector3 bottomRight = topRight + new Vector3(0, -inDistance, 0);
+        Vector3 bottomLeft = bottomRight + new Vector3(-inDistance, 0, 0); 
+
+        if (randomNumber == 0)
+        {
+            Instantiate(bombPrefab, plrTransform.position + topLeft, Quaternion.identity);
+
+
+        }
+
+        if (randomNumber == 1)
+        {
+            Instantiate(bombPrefab, plrTransform.position + topRight, Quaternion.identity);
+
+
+        }
+
+        if (randomNumber == 2)
+        {
+            Instantiate(bombPrefab, plrTransform.position + bottomLeft, Quaternion.identity);
+
+
+        }
+
+        if (randomNumber == 3)
+        {
+            Instantiate(bombPrefab, plrTransform.position + bottomRight, Quaternion.identity);
+
 
         }
 
