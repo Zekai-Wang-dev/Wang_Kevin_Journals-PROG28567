@@ -38,6 +38,13 @@ public class Player : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+
+            WarpPlayer(enemyTransform, 1.4f);
+
+        }
+
     }
 
     private void SpawnBombAtOffset(Vector3 offset)
@@ -97,6 +104,20 @@ public class Player : MonoBehaviour
 
 
         }
+
+    }
+
+    public void WarpPlayer(Transform target, float ratio)
+    {
+
+        if (ratio > 1)
+        {
+
+            ratio = 1f; 
+
+        }
+
+        plrTransform.position = Vector3.Lerp(plrTransform.position, target.position, ratio);
 
     }
 
