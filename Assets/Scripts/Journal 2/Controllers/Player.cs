@@ -45,6 +45,13 @@ public class Player : MonoBehaviour
 
         }
 
+        if (Input.GetKey(KeyCode.S))
+        {
+
+            DetectAsteroids(10f, asteroidTransforms);
+
+        }
+
     }
 
     private void SpawnBombAtOffset(Vector3 offset)
@@ -118,6 +125,36 @@ public class Player : MonoBehaviour
         }
 
         plrTransform.position = Vector3.Lerp(plrTransform.position, target.position, ratio);
+
+    }
+
+    public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids)
+    {
+
+        List<Vector3> normals = new List<Vector3>();
+
+        for (int i = 0; i < inAsteroids.Count; i++)
+        {
+
+            float magnitude = (plrTransform.position - inAsteroids[i].position).magnitude;
+            Vector3 normal = (inAsteroids[i].position  - plrTransform.position).normalized;
+
+            if (Mathf.Abs(magnitude) < inMaxRange)
+            {
+
+                normals.Add(normal);
+
+            }
+
+        }
+
+        for (int i = 0; i < normals.Count; i++)
+        {
+
+            Debug.DrawLine(plrTransform.position, plrTransform.position + normals[i] * 2.5f);
+
+        }
+
 
     }
 
