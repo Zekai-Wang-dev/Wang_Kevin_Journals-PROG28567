@@ -17,15 +17,20 @@ public class Player : MonoBehaviour
     public int numberOfTrailBombs = 5;
 
     public Vector3 velocity;
-    public float accelerationTime; 
+    public float accelerationTime;
+    public float decelerationTime; 
     public float speed;
-    public float maxSpeed; 
+    public float maxSpeed;
+
+    public bool accel; 
 
     private void Start()
     {
 
-        accelerationTime = 1f; 
-        speed = 5f; 
+        accelerationTime = 1f;
+        decelerationTime = 1f; 
+        speed = 5f;
+        accel = false; 
 
     }
 
@@ -69,6 +74,9 @@ public class Player : MonoBehaviour
         }
 
         PlayerMovement();
+
+
+        plrTransform.position += velocity * Time.deltaTime;
 
     }
 
@@ -180,35 +188,66 @@ public class Player : MonoBehaviour
     {
 
         float accelerationRate = maxSpeed / accelerationTime;
+        float decelerationRate = maxSpeed / decelerationTime;
+
+        accel = false; 
+
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-
+            accel = true; 
             velocity += Vector3.left * accelerationRate * Time.deltaTime; 
 
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-
+            accel = true;
             velocity += Vector3.right * accelerationRate * Time.deltaTime;
 
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-
+            accel = true;
             velocity += Vector3.up * accelerationRate * Time.deltaTime;
 
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
-
+            accel = true;
             velocity += Vector3.down * accelerationRate * Time.deltaTime;
 
         }
 
-        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        if (!accel)
+        {
+            if (velocity.x > 0)
+            {
 
-        plrTransform.position += velocity * Time.deltaTime; 
+                velocity += Vector3.left * decelerationRate * Time.deltaTime;
+
+            }
+            if (velocity.y > 0)
+            {
+
+                velocity += Vector3.down * decelerationRate * Time.deltaTime;
+
+            }
+            if (velocity.x < 0)
+            {
+
+                velocity += Vector3.right * decelerationRate * Time.deltaTime;
+
+            }
+            if (velocity.y < 0)
+            {
+
+                velocity += Vector3.up * decelerationRate * Time.deltaTime;
+
+            }
+        }
+        
+
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
     }
 
