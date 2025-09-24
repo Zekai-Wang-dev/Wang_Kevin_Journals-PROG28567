@@ -28,12 +28,42 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+
+        EnemyMovement();
+        enemyTransform.position += velocity * Time.deltaTime;
+
     }
 
     public void EnemyMovement()
     {
 
         //The movement for the enemy would be the same as the player, except its direction is based on the plrTransform's position. 
+
+        float accelerationRate = maxSpeed / accelerationTime;
+        float decelerationRate = maxSpeed / decelerationTime;
+
+        if (plrTransform.position.x < enemyTransform.position.x)
+        {
+            velocity += Vector3.left * accelerationRate * Time.deltaTime;
+
+        }
+        if (plrTransform.position.x > enemyTransform.position.x)
+        {
+            velocity += Vector3.right * accelerationRate * Time.deltaTime;
+
+        }
+        if (plrTransform.position.y > enemyTransform.position.y)
+        {
+            velocity += Vector3.up * accelerationRate * Time.deltaTime;
+
+        }
+        if (plrTransform.position.y < enemyTransform.position.y)
+        {
+            velocity += Vector3.down * accelerationRate * Time.deltaTime;
+
+        }
+
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
     }
 

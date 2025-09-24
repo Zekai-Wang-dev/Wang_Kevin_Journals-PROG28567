@@ -469,6 +469,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114516115454935764, guid: e3900e4d87ee29c43ad1d9098b51432c, type: 3}
+      propertyPath: plrTransform
+      value: 
+      objectReference: {fileID: 2064521973}
+    - target: {fileID: 114516115454935764, guid: e3900e4d87ee29c43ad1d9098b51432c, type: 3}
+      propertyPath: enemyTransform
+      value: 
+      objectReference: {fileID: 1441953408}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
