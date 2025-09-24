@@ -28,7 +28,8 @@ public class Player : MonoBehaviour
     {
 
         accelerationTime = 1f;
-        decelerationTime = 1f; 
+        decelerationTime = 1f;
+        maxSpeed = 10f; 
         speed = 5f;
         accel = false; 
 
