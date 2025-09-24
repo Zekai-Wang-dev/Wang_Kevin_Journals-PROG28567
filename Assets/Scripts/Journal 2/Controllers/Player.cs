@@ -1,17 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public List<Transform> asteroidTransforms;
     public Transform enemyTransform;
     public Transform plrTransform; 
     public GameObject bombPrefab;
-    public List<Transform> asteroidTransforms;
+    public Transform bombsTransform;
 
     public Vector3 bombOffset = new Vector3(0, 1, 0);
 
     public float bombTrailSpacing = 1f;
-    public int numberOfTrailBombs = 5; 
+    public int numberOfTrailBombs = 5;
+
+    public Vector3 velocity;
+    public float speed;
+
+    private void Start()
+    {
+
+        speed = 5f; 
+
+    }
 
     // Update is called once per frame
     void Update()
@@ -51,6 +63,8 @@ public class Player : MonoBehaviour
             DetectAsteroids(10f, asteroidTransforms);
 
         }
+
+        PlayerMovement();
 
     }
 
@@ -155,6 +169,40 @@ public class Player : MonoBehaviour
 
         }
 
+
+    }
+
+    public void PlayerMovement()
+    {
+
+        velocity = Vector3.zero;
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+
+            velocity += Vector3.left * speed; 
+
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+
+            velocity += Vector3.right * speed;
+
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+
+            velocity += Vector3.up * speed;
+
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+
+            velocity += Vector3.down * speed;
+
+        }
+
+        plrTransform.position += velocity * Time.deltaTime; 
 
     }
 
