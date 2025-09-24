@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -16,11 +17,14 @@ public class Player : MonoBehaviour
     public int numberOfTrailBombs = 5;
 
     public Vector3 velocity;
+    public float accelerationTime; 
     public float speed;
+    public float maxSpeed; 
 
     private void Start()
     {
 
+        accelerationTime = 1f; 
         speed = 5f; 
 
     }
@@ -175,32 +179,34 @@ public class Player : MonoBehaviour
     public void PlayerMovement()
     {
 
-        velocity = Vector3.zero;
+        float accelerationRate = maxSpeed / accelerationTime;
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
 
-            velocity += Vector3.left * speed; 
+            velocity += Vector3.left * accelerationRate * Time.deltaTime; 
 
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
 
-            velocity += Vector3.right * speed;
+            velocity += Vector3.right * accelerationRate * Time.deltaTime;
 
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
 
-            velocity += Vector3.up * speed;
+            velocity += Vector3.up * accelerationRate * Time.deltaTime;
 
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
 
-            velocity += Vector3.down * speed;
+            velocity += Vector3.down * accelerationRate * Time.deltaTime;
 
         }
+
+        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
 
         plrTransform.position += velocity * Time.deltaTime; 
 
