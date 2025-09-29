@@ -22,7 +22,12 @@ public class Player : MonoBehaviour
     public float speed;
     public float maxSpeed;
 
-    public bool accel; 
+    public bool accel;
+
+    public float radius;
+    public int circlePoints;
+
+    public List<Vector3> drawPoints; 
 
     private void Start()
     {
@@ -31,7 +36,9 @@ public class Player : MonoBehaviour
         decelerationTime = 1f;
         maxSpeed = 10f; 
         speed = 5f;
-        accel = false; 
+        accel = false;
+        radius = 5f;
+        circlePoints = 8; 
 
     }
 
@@ -78,6 +85,8 @@ public class Player : MonoBehaviour
 
 
         plrTransform.position += velocity * Time.deltaTime;
+
+        PlayerRadar();
 
     }
 
@@ -249,6 +258,44 @@ public class Player : MonoBehaviour
         
 
         velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
+    }
+
+    public void PlayerRadar()
+    {
+        drawPoints.Clear();
+
+        Color color = Color.green;
+        float enemyDistance = (enemyTransform.position - plrTransform.position).magnitude;
+
+        if (enemyDistance < radius)
+        {
+
+            color = Color.red;
+
+        }
+
+        for (int i = 0; i < circlePoints; i++)
+        {
+
+            float pointDistance = 360f / circlePoints;
+
+            float x = Mathf.Cos(pointDistance * i * Mathf.Deg2Rad);
+            float y = Mathf.Sin(pointDistance * i * Mathf.Deg2Rad);
+
+            Vector3 drawnPoint = plrTransform.position + new Vector3(x, y, 0) * radius; 
+
+            drawPoints.Add(drawnPoint);
+
+        }
+
+        for (int i = 0; i < circlePoints - 1;i++)
+        {
+
+            Debug.DrawLine(drawPoints[i], drawPoints[i + 1], color);
+            Debug.DrawLine(drawPoints[0], drawPoints[circlePoints - 1], color);
+
+        }
 
     }
 
