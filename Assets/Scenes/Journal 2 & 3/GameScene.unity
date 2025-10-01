@@ -1110,6 +1110,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2064521973}
     - target: {fileID: 6890330259706833056, guid: abc125f00ae369940b2c5c0275186637, type: 3}
+      propertyPath: powerupPrefab
+      value: 
+      objectReference: {fileID: 1567431237259788, guid: 03444c0c59102ba46bb1a8b5a1b0a810, type: 3}
+    - target: {fileID: 6890330259706833056, guid: abc125f00ae369940b2c5c0275186637, type: 3}
       propertyPath: enemyTransform
       value: 
       objectReference: {fileID: 1441953408}
@@ -1117,6 +1121,10 @@ PrefabInstance:
       propertyPath: bombTrailSpacing
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6890330259706833056, guid: abc125f00ae369940b2c5c0275186637, type: 3}
+      propertyPath: powerupTransform
+      value: 
+      objectReference: {fileID: 4925497327538514, guid: 03444c0c59102ba46bb1a8b5a1b0a810, type: 3}
     - target: {fileID: 6890330259706833056, guid: abc125f00ae369940b2c5c0275186637, type: 3}
       propertyPath: numberOfTrailBombs
       value: 3

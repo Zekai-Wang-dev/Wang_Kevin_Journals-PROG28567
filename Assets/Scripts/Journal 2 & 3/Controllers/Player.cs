@@ -11,6 +11,9 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public Transform bombsTransform;
 
+    public GameObject powerupPrefab;
+    public Transform powerupTransform; 
+
     public Vector3 bombOffset = new Vector3(0, 1, 0);
 
     public float bombTrailSpacing = 1f;
@@ -27,7 +30,7 @@ public class Player : MonoBehaviour
     public float radius;
     public int circlePoints;
 
-    public List<Vector3> drawPoints; 
+    public List<Vector3> drawPoints;
 
     private void Start()
     {
@@ -78,6 +81,13 @@ public class Player : MonoBehaviour
         {
 
             DetectAsteroids(10f, asteroidTransforms);
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+
+            SpawnPowerups(3, 6);
 
         }
 
@@ -294,6 +304,24 @@ public class Player : MonoBehaviour
 
             Debug.DrawLine(drawPoints[i], drawPoints[i + 1], color);
             Debug.DrawLine(drawPoints[0], drawPoints[circlePoints - 1], color);
+
+        }
+
+    }
+
+    public void SpawnPowerups(float radius, int numberOfPowerups)
+    {
+
+        float distanceBetweenPoints = 360 / numberOfPowerups;
+
+
+        for (int i = 0; i < numberOfPowerups;i++)
+        {
+
+            float x = Mathf.Cos(i * distanceBetweenPoints * Mathf.Deg2Rad);
+            float y = Mathf.Sin(i * distanceBetweenPoints * Mathf.Deg2Rad);
+
+            Instantiate(powerupPrefab, plrTransform.position + new Vector3(x, y, 0) * radius, Quaternion.identity);
 
         }
 
