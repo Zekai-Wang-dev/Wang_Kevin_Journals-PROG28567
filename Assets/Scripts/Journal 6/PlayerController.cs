@@ -5,7 +5,9 @@ public class PlayerController : MonoBehaviour
 {
 
     public float speed;
-    public float jumpForce;
+
+    public float apexHeight;
+    public float apexTime; 
 
     public FacingDirection currentFacing; 
 
@@ -32,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
         playerInput.x = Input.GetAxis("Horizontal");
 
+
         MovementUpdate(playerInput);
     }
 
@@ -39,15 +42,18 @@ public class PlayerController : MonoBehaviour
     {
 
         Vector2 velocity = playerInput * speed;
+        velocity.y = -4.9f;
+
+        print(rigidbody.linearVelocity.y);
 
         if (Input.GetKeyDown(KeyCode.Space) & IsGrounded())
         {
 
-            velocity.y = jumpForce;
+            velocity.y += 4.9f * apexTime;
 
         }
 
-        rigidbody.linearVelocity = new Vector2(velocity.x, rigidbody.linearVelocityY += velocity.y); 
+        rigidbody.linearVelocity = new Vector2(velocity.x, rigidbody.linearVelocity.y + velocity.y); 
 
     }
 
@@ -64,7 +70,7 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded()
     {
 
-        if (rigidbody.linearVelocityY > -0.01 && rigidbody.linearVelocityY < 0.01)
+        if (rigidbody.linearVelocityY > -0.5 && rigidbody.linearVelocityY < 0.5)
         {
             return true;
         }
