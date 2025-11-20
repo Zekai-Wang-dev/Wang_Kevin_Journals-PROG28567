@@ -7,7 +7,9 @@ public class PlayerController : MonoBehaviour
     public float speed;
 
     public float apexHeight;
-    public float apexTime; 
+    public float apexTime;
+
+    public float gravity; 
 
     public FacingDirection currentFacing; 
 
@@ -25,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void Update()
+    public void FixedUpdate()
     {
         // The input from the player needs to be determined and
         // then passed in the to the MovementUpdate which should
@@ -36,24 +38,28 @@ public class PlayerController : MonoBehaviour
 
 
         MovementUpdate(playerInput);
+
+
     }
 
     private void MovementUpdate(Vector2 playerInput)
     {
 
         Vector2 velocity = playerInput * speed;
-        velocity.y = -4.9f;
+        gravity = -2 * apexHeight / ((Mathf.Pow(apexTime, 2)));
 
-        print(rigidbody.linearVelocity.y);
+        velocity.y = gravity * Time.deltaTime;
+
+        print(IsGrounded());
 
         if (Input.GetKeyDown(KeyCode.Space) & IsGrounded())
         {
 
-            velocity.y += 4.9f * apexTime;
+            velocity.y += 2 * apexHeight / apexTime; 
 
         }
 
-        rigidbody.linearVelocity = new Vector2(velocity.x, rigidbody.linearVelocity.y + velocity.y); 
+        rigidbody.linearVelocity = new Vector2(velocity.x, rigidbody.linearVelocityY += velocity.y); 
 
     }
 
@@ -70,7 +76,7 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded()
     {
 
-        if (rigidbody.linearVelocityY > -0.5 && rigidbody.linearVelocityY < 0.5)
+        if (rigidbody.linearVelocityY > -0.01 && rigidbody.linearVelocityY < 0.01)
         {
             return true;
         }
