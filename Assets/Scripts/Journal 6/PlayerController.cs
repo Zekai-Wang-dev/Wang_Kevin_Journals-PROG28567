@@ -43,7 +43,9 @@ public class PlayerController : MonoBehaviour
         MovementUpdate(playerInput);
 
     }
-    private float time; 
+    private float time;
+
+    private bool debounce; 
 
     private void MovementUpdate(Vector2 playerInput)
     {
@@ -53,33 +55,34 @@ public class PlayerController : MonoBehaviour
 
         velocity.y = gravity * Time.deltaTime;
 
-        if (!IsGrounded())
+        if (IsGrounded())
         {
-            
-            time += Time.deltaTime; 
-        }
-        else
-        {
-            time = 0f;
+
+            print("Grounded");
+            time = 0f; 
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) & (IsGrounded() || time < coyoteTime))
+
+        if (time < coyoteTime)
         {
 
+            time += Time.deltaTime;
+
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Space) && (IsGrounded() || time < coyoteTime))
+        {
+
+            print("Jumped");
             time = coyoteTime;
-            velocity.y += 2 * apexHeight / apexTime; 
+            velocity.y += 2 * apexHeight / apexTime;
 
         }
-   
+      
         rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity)); 
     
-        if (rigidbody.linearVelocity.y < 0)
-        {
-
-            rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, -0.2f)); 
-
-        }
 
     }
 
@@ -95,14 +98,14 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsGrounded()
     {
-
-        if (rigidbody.linearVelocityY > -0.01f && rigidbody.linearVelocityY < 0.01f)
+        if (rigidbody.IsTouching(GameObject.Find("GroundTilemap").GetComponent<CompositeCollider2D>()))
         {
 
             return true;
-        }
 
+        }
         return false;
+
     }
 
     public FacingDirection GetFacingDirection()
