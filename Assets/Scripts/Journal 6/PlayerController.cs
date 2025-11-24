@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
 
     public float gravity; 
 
+    public float terminalVelocity;
+
+    public float coyoteTime; 
+
     public FacingDirection currentFacing; 
 
     public Rigidbody2D rigidbody; 
@@ -27,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void FixedUpdate()
+    public void Update()
     {
         // The input from the player needs to be determined and
         // then passed in the to the MovementUpdate which should
@@ -36,30 +40,46 @@ public class PlayerController : MonoBehaviour
 
         playerInput.x = Input.GetAxis("Horizontal");
 
-
         MovementUpdate(playerInput);
 
-
     }
+    private float time; 
 
     private void MovementUpdate(Vector2 playerInput)
     {
 
         Vector2 velocity = playerInput * speed;
-        gravity = -2 * apexHeight / ((Mathf.Pow(apexTime, 2)));
+        gravity = -2 * apexHeight / Mathf.Pow(apexTime, 2);
 
         velocity.y = gravity * Time.deltaTime;
 
-        print(IsGrounded());
-
-        if (Input.GetKeyDown(KeyCode.Space) & IsGrounded())
+        if (!IsGrounded())
         {
-
-            velocity.y += 2 * apexHeight / apexTime; 
+            
+            time += Time.deltaTime; 
+        }
+        else
+        {
+            time = 0f;
 
         }
 
-        rigidbody.linearVelocity = new Vector2(velocity.x, rigidbody.linearVelocityY += velocity.y); 
+        if (Input.GetKeyDown(KeyCode.Space) & (IsGrounded() || time < coyoteTime))
+        {
+
+            time = coyoteTime;
+            velocity.y += 2 * apexHeight / apexTime; 
+
+        }
+   
+        rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity)); 
+    
+        if (rigidbody.linearVelocity.y < 0)
+        {
+
+            rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, -0.2f)); 
+
+        }
 
     }
 
@@ -76,8 +96,9 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded()
     {
 
-        if (rigidbody.linearVelocityY > -0.01 && rigidbody.linearVelocityY < 0.01)
+        if (rigidbody.linearVelocityY > -0.01f && rigidbody.linearVelocityY < 0.01f)
         {
+
             return true;
         }
 
