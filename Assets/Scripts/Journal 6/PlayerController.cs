@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
 {
 
     public float speed;
+    public float dashSpeed; 
 
     public float apexHeight;
     public float apexTime;
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
     {
 
         Vector2 velocity = playerInput * speed;
+        Vector2 dashVelocity = Vector2.zero;
         gravity = -2 * apexHeight / Mathf.Pow(apexTime, 2);
 
         velocity.y = gravity * Time.deltaTime;
@@ -80,8 +82,28 @@ public class PlayerController : MonoBehaviour
             velocity.y += 2 * apexHeight / apexTime;
 
         }
-      
-        rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity)); 
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+
+            if (playerInput.x < 0)
+            {
+
+                dashVelocity = new Vector2(-dashSpeed, 0);
+
+            }
+
+            else if (playerInput.x > 0)
+            {
+
+                dashVelocity = new Vector2(dashSpeed, 0);
+
+            }
+            print("velocity: " + velocity.x + ", " + "dash velocity: " + dashVelocity.x + ", " + "result: " + velocity.x + dashVelocity.x);
+
+        }
+
+        rigidbody.linearVelocity = new Vector2(velocity.x + dashVelocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity)); 
     
 
     }

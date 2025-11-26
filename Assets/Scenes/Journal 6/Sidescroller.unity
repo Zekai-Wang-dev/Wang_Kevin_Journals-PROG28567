@@ -1702,6 +1702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  dashSpeed: 20
   apexHeight: 3
   apexTime: 1
   gravity: 0
