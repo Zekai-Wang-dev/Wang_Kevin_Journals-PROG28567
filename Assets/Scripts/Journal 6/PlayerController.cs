@@ -1,11 +1,23 @@
+using NUnit.Framework;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
 
+    public float climbSpeed; 
+
     public float speed;
-    public float dashSpeed; 
+    public float dashSpeed;
+    Vector2 dashDistance = Vector2.zero;
+
+    public float dashDuration;
+    public float dashCD;
+
+    public TMP_Text dashCDText; 
 
     public float apexHeight;
     public float apexTime;
@@ -18,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     public FacingDirection currentFacing; 
 
-    public Rigidbody2D rigidbody; 
+    public Rigidbody2D rigidbody;
 
     public enum FacingDirection
     {
@@ -46,21 +58,29 @@ public class PlayerController : MonoBehaviour
     }
     private float time;
 
-    private bool debounce; 
+    private bool dashing;
+    private bool dashDebounce; 
+
+    private Vector2 velocity = Vector2.zero;
 
     private void MovementUpdate(Vector2 playerInput)
     {
 
-        Vector2 velocity = playerInput * speed;
-        Vector2 dashVelocity = Vector2.zero;
+        velocity = playerInput * speed;
         gravity = -2 * apexHeight / Mathf.Pow(apexTime, 2);
 
         velocity.y = gravity * Time.deltaTime;
 
+        if (IsClimbing() && playerInput != Vector2.zero)
+        {
+
+            velocity.y = climbSpeed * Time.deltaTime; 
+
+        }
+
         if (IsGrounded())
         {
 
-            print("Grounded");
             time = 0f; 
 
         }
@@ -77,34 +97,95 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && (IsGrounded() || time < coyoteTime))
         {
 
-            print("Jumped");
             time = coyoteTime;
             velocity.y += 2 * apexHeight / apexTime;
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !dashing && !dashDebounce)
         {
 
             if (playerInput.x < 0)
             {
 
-                dashVelocity = new Vector2(-dashSpeed, 0);
+                dashDistance = new Vector2(-dashSpeed, 0);
 
             }
 
             else if (playerInput.x > 0)
             {
 
-                dashVelocity = new Vector2(dashSpeed, 0);
+                dashDistance = new Vector2(dashSpeed, 0);
 
             }
-            print("velocity: " + velocity.x + ", " + "dash velocity: " + dashVelocity.x + ", " + "result: " + velocity.x + dashVelocity.x);
+
+            else
+            {
+
+                dashDistance = Vector2.zero;
+
+            }
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+
+                dashDistance += new Vector2(0, dashSpeed);
+
+            }
+
+            StartCoroutine(dashStart(playerInput));
 
         }
 
-        rigidbody.linearVelocity = new Vector2(velocity.x + dashVelocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity)); 
-    
+        if (!dashing) 
+        {
+
+            rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity));
+
+        }
+
+    }
+
+    private IEnumerator dashStart(Vector2 playerInput)
+    {
+
+        float t = 0f;
+
+        dashing = true;
+        dashDebounce = true; 
+
+        Vector2 currentPosition = rigidbody.position;
+
+        rigidbody.linearVelocity = Vector2.zero; 
+
+        while (t < dashDuration)
+        {
+
+            t += Time.deltaTime;
+            rigidbody.MovePosition(Vector2.Lerp(currentPosition, currentPosition + dashDistance, t));
+
+            yield return 0; 
+
+        }
+
+        dashing = false;
+
+        t = 0f;
+
+        dashCDText.enabled = true; 
+
+        while (t < dashCD)
+        {
+
+            dashCDText.text = "Dash CD: " + (dashCD - t).ToString("0.0");
+            t += Time.deltaTime;
+
+            yield return 0; 
+
+        }
+
+        dashDebounce = false;
+        dashCDText.enabled = false;
 
     }
 
@@ -118,14 +199,35 @@ public class PlayerController : MonoBehaviour
 
         return false;
     }
+
     public bool IsGrounded()
     {
-        if (rigidbody.IsTouching(GameObject.Find("GroundTilemap").GetComponent<CompositeCollider2D>()))
+
+        List<RaycastHit2D> hit = new List<RaycastHit2D>();
+
+        if (rigidbody.Cast(Vector2.down, hit, 0.01f) > 0)
+        {
+
+            return true;
+
+        }        
+
+        return false;
+
+    }
+
+    public bool IsClimbing()
+    {
+
+        List<RaycastHit2D> hit = new List<RaycastHit2D>();
+
+        if (rigidbody.Cast(Vector2.left, hit, 0.01f) > 0 || rigidbody.Cast(Vector2.right, hit, 0.01f) > 0)
         {
 
             return true;
 
         }
+
         return false;
 
     }
