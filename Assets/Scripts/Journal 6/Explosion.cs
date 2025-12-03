@@ -5,6 +5,7 @@ using UnityEngine;
 public class Explosion : MonoBehaviour
 {
 
+    //Initialize variables
     public bool exploded;
     public float explodeRadius;
 
@@ -24,6 +25,7 @@ public class Explosion : MonoBehaviour
 
     }
 
+    //Checks collision to activate tnt 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!exploded && collision.collider.name == "Player")
@@ -35,14 +37,17 @@ public class Explosion : MonoBehaviour
 
     }
 
+    //Method to explode the tnt and fling players
     public void explode()
     {
 
+        //Initialize variables
         List<RaycastHit2D> hit = new List<RaycastHit2D>();
         GameObject player = null;
         exploded = true;
         GetComponent<SpriteRenderer>().color = Color.red; 
 
+        //Casts a ray to the right of the tnt and checks for the player 
         if (GetComponent<Rigidbody2D>().Cast(Vector2.right, hit, explodeRadius) > 0)
         {
             for (int i = 0; i < hit.Count; i++)
@@ -56,6 +61,8 @@ public class Explosion : MonoBehaviour
             }
 
         }
+
+        //Casts a ray to the left of the tnt and checks for the player 
         if (GetComponent<Rigidbody2D>().Cast(Vector2.left, hit, explodeRadius) > 0)
         {
             for (int i = 0; i < hit.Count; i++)
@@ -71,6 +78,7 @@ public class Explosion : MonoBehaviour
 
         }
 
+        //If player is found fling the player. 
         if (player != null)
         {
 
@@ -82,10 +90,12 @@ public class Explosion : MonoBehaviour
 
         }
 
+        //Start the coroutine to destroy the tnt
         StartCoroutine(selfDestruct());
 
     }
 
+    //Destroys the tnt after a set time has passed. 
     public IEnumerator selfDestruct()
     {
 
@@ -98,7 +108,7 @@ public class Explosion : MonoBehaviour
             yield return 0; 
 
         }
-
+        
         playerController.exploded = false;
         Destroy(gameObject);
 

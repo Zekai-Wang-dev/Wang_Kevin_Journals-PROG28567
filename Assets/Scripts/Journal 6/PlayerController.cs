@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
 
+    //Initialize variables
     public float climbSpeed; 
 
     public float speed;
@@ -33,11 +34,13 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rigidbody;
     public bool exploded; 
 
+    //An enum for left and right
     public enum FacingDirection
     {
         left, right
     }
 
+    //Attach the rigidbody to a variable
     void Start()
     {
         
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    //Update loop to get player input
     public void Update()
     {
         // The input from the player needs to be determined and
@@ -57,6 +61,8 @@ public class PlayerController : MonoBehaviour
         MovementUpdate(playerInput);
 
     }
+    
+    //Initialize more variables to do with movement 
     private float time;
 
     private bool dashing;
@@ -64,14 +70,17 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 velocity = Vector2.zero;
 
+    //Method to update the movement of the character
     private void MovementUpdate(Vector2 playerInput)
     {
 
+        //Assign value to the variables.
         velocity = playerInput * speed;
         gravity = -2 * apexHeight / Mathf.Pow(apexTime, 2);
 
         velocity.y = gravity * Time.deltaTime;
 
+        //Makes the character climb the wall if the character is climbing and the player is moving
         if (IsClimbing() && playerInput != Vector2.zero)
         {
 
@@ -79,6 +88,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
+        //Reset the timer for coyoteTime once the player touches the ground
         if (IsGrounded())
         {
 
@@ -86,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-
+        //Add to the timer while under coyoteTime
         if (time < coyoteTime)
         {
 
@@ -94,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-
+        //If coyoteTime has not been reached, allow player to jump 
         if (Input.GetKeyDown(KeyCode.Space) && (IsGrounded() || time < coyoteTime))
         {
 
@@ -103,9 +113,11 @@ public class PlayerController : MonoBehaviour
 
         }
 
+        //Makes player dash by pressing Q
         if (Input.GetKeyDown(KeyCode.Q) && !dashing && !dashDebounce)
         {
 
+            //Dash left
             if (playerInput.x < 0)
             {
 
@@ -113,6 +125,7 @@ public class PlayerController : MonoBehaviour
 
             }
 
+            //Dash right
             else if (playerInput.x > 0)
             {
 
@@ -120,6 +133,7 @@ public class PlayerController : MonoBehaviour
 
             }
 
+            //Don't dash if no input detected
             else
             {
 
@@ -127,6 +141,7 @@ public class PlayerController : MonoBehaviour
 
             }
 
+            //Dash up
             if (Input.GetKey(KeyCode.Space))
             {
 
@@ -134,10 +149,13 @@ public class PlayerController : MonoBehaviour
 
             }
 
+
+            //Start lerping character to dash destination
             StartCoroutine(dashStart(playerInput));
 
         }
 
+        //Add to linearvelocity while not dashing or exploding 
         if (!dashing && !exploded) 
         {
 
@@ -147,9 +165,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    //Coroutine to lerp the player to dash destination
     private IEnumerator dashStart(Vector2 playerInput)
     {
 
+        //Assign value to some variables
         float t = 0f;
 
         dashing = true;
@@ -159,6 +179,7 @@ public class PlayerController : MonoBehaviour
 
         rigidbody.linearVelocity = Vector2.zero; 
 
+        //Starts lerping to destination
         while (t < dashDuration)
         {
 
@@ -175,6 +196,7 @@ public class PlayerController : MonoBehaviour
 
         dashCDText.enabled = true; 
 
+        //Starts cooldown timer 
         while (t < dashCD)
         {
 
@@ -185,11 +207,13 @@ public class PlayerController : MonoBehaviour
 
         }
 
+        //Cooldown resets
         dashDebounce = false;
         dashCDText.enabled = false;
 
     }
 
+    //Checks if the character is moving left/right
     public bool IsWalking()
     {
 
@@ -201,11 +225,13 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    //Checks if the character touched the ground
     public bool IsGrounded()
     {
 
         List<RaycastHit2D> hit = new List<RaycastHit2D>();
 
+        //Cast a ray down from the character
         if (rigidbody.Cast(Vector2.down, hit, 0.01f) > 0)
         {
 
@@ -217,11 +243,13 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    //Checks if the character is climbing a wall. 
     public bool IsClimbing()
     {
 
         List<RaycastHit2D> hit = new List<RaycastHit2D>();
 
+        //Cast a ray left and right to check for walls
         if (rigidbody.Cast(Vector2.left, hit, 0.01f) > 0 || rigidbody.Cast(Vector2.right, hit, 0.01f) > 0)
         {
 
@@ -233,9 +261,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    //Checks for the character's facing direction based on its movements
     public FacingDirection GetFacingDirection()
     {
 
+        //Face right
         if (rigidbody.linearVelocityX > 0)
         {
 
@@ -244,6 +274,8 @@ public class PlayerController : MonoBehaviour
             return FacingDirection.right;
 
         }
+
+        //Face left
         else if (rigidbody.linearVelocityX < 0)
         {
 
