@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     public FacingDirection currentFacing; 
 
     public Rigidbody2D rigidbody;
+    public bool exploded; 
 
     public enum FacingDirection
     {
@@ -137,7 +138,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        if (!dashing) 
+        if (!dashing && !exploded) 
         {
 
             rigidbody.linearVelocity = new Vector2(velocity.x, Mathf.Clamp(rigidbody.linearVelocity.y + velocity.y, -terminalVelocity, Mathf.Infinity));
