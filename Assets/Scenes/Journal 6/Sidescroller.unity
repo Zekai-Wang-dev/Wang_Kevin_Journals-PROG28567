@@ -1882,7 +1882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86a1ce42ea3e3dd44868493ae73ec06d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbSpeed: 0.1
+  climbSpeed: 1
   speed: 5
   dashSpeed: 10
   dashDuration: 0.2

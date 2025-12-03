@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         if (IsClimbing() && playerInput != Vector2.zero)
         {
 
-            velocity.y = climbSpeed * Time.deltaTime; 
+            rigidbody.position = new Vector2(rigidbody.position.x, rigidbody.position.y + climbSpeed * Time.deltaTime);
 
         }
 
